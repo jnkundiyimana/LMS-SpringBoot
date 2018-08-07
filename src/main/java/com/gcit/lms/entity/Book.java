@@ -5,6 +5,7 @@ package com.gcit.lms.entity;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -41,11 +42,11 @@ public class Book {
 	@JoinColumn(name="pubId")
 	private Publisher publisher;
 	
-	@ManyToMany
+	@ManyToMany(cascade= CascadeType.ALL )
 	@JoinTable(name = "tbl_book_authors", joinColumns = { @JoinColumn(name = "bookId") }, inverseJoinColumns = { @JoinColumn(name = "authorId") })
 	private List <Author> authors;
 	
-	@ManyToMany
+	@ManyToMany(cascade= CascadeType.ALL )
 	@JoinTable(name = "tbl_book_genres", joinColumns = { @JoinColumn(name = "bookId") }, inverseJoinColumns = { @JoinColumn(name = "genre_id")  })
 	private List <Genre> genres;
 	

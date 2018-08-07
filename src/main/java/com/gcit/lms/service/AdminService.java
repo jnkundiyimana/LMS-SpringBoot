@@ -6,6 +6,8 @@ package com.gcit.lms.service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -235,6 +237,18 @@ public class AdminService {
 	
 	@RequestMapping(value = "/addBook", method = RequestMethod.POST, produces = "application/json")
 	public void addBook(@RequestBody Book book){
+		bookRepo.save(book);	
+	}
+	
+	
+	@RequestMapping(value = "/deleteBook", method = RequestMethod.DELETE, produces = "application/json")
+	public void deleteBook(@RequestParam("bookId") Integer bookId){
+		 bookRepo.deleteById(bookId);	
+	}
+	
+	@Transactional
+	@RequestMapping(value = "/updateBook", method = RequestMethod.PUT, produces = "application/json")
+	public void updateBook(@RequestBody Book book){
 		bookRepo.save(book);	
 	}
 	
