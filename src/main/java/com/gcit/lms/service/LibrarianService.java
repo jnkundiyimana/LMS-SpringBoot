@@ -41,39 +41,39 @@ public class LibrarianService {
 	
 	//Branches
 		
-		@RequestMapping(value = "/allBranches", method = RequestMethod.GET, produces = "application/json")
+		@RequestMapping(value = "/librarian/branches", method = RequestMethod.GET)
 		public List<LibraryBranch> readBranches(){
 			return branchRepo.findAll();	
 		}
 		
-		@RequestMapping(value = "/librarian/readBranchByPK", method = RequestMethod.GET, produces = "application/json")
-		public Optional<LibraryBranch> readBranchesByPK(@RequestParam("branchId") Integer branchId){
+		@RequestMapping(value = "/librarian/branches/{branchId}", method = RequestMethod.GET)
+		public Optional<LibraryBranch> readBranchesByPK(@PathVariable("branchId") Integer branchId){
 			return adminService.readBranchesByPK(branchId);	
 		}
 	
-	@RequestMapping(value = "/librarian/updateBranch", method = RequestMethod.PUT, produces = "application/json")
+	@RequestMapping(value = "/librarian/updateBranch", method = RequestMethod.PUT)
 	public void updateBranch(@RequestBody LibraryBranch branch){
 		adminService.updateBranch(branch);
 	}
 	
 	
-	@RequestMapping(value = "/readBooks", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/librarian/books", method = RequestMethod.GET)
 	public List<Book> readBooks(){
 		return bookRepo.findAll();	
 	}
 	
-	@RequestMapping(value = "/readBooks/{branchId}", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/librarian/books/{branchId}", method = RequestMethod.GET)
 	public List<Book> readBookByBranch(@PathVariable Integer branchId){
 		return bookRepo.findBooksByBranch(branchId);
 	}
 	
 	@Transactional
-	@RequestMapping(value = "/addBookCopies", method = RequestMethod.POST )
+	@RequestMapping(value = "/librarian/addBookCopies", method = RequestMethod.POST )
 	public void addBookCopies(@RequestBody() BookCopies bookCopies){
 		 branchRepo.addBookCopiesInBranch(bookCopies.getNoOfCopies(), bookCopies.getBookId(), bookCopies.getBranchId());
 	}
 	
-	@RequestMapping(value = "/checkedOutbooksPerBranch/{branchId}", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/checkedOutbooksPerBranch/{branchId}", method = RequestMethod.GET)
 	public List<Book> readCcheckedOutBooks(@RequestParam Integer branchId){
 		return bookRepo.findCheckedOutBooksPerBranch(branchId);	
 	}

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gcit.lms.Repositories.AuthorRepository;
@@ -66,22 +67,26 @@ public class BorrowerService {
 	Timestamp dateIn;
 	
 	
-	@RequestMapping(value = "/readBorrowers", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/borrowers", method = RequestMethod.GET)
+	@ResponseBody
 	public List<Borrower> readBorrowers(){
 		return borrowerRepo.findAll();	
 	}
 	
-	@RequestMapping(value = "/readBranches", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/borrower/branches", method = RequestMethod.GET)
+	@ResponseBody
 	public List<LibraryBranch> readBranchess(){
 		return branchRepo.findAll();	
 	}
 	
-	@RequestMapping(value = "/availableBooks/{branchId}", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/borrower/availableBooks/{branchId}", method = RequestMethod.GET)
+	@ResponseBody
 	public List<Book> availableBooksInBranch(@PathVariable Integer branchId){
 		return bookRepo.findAvailableBooksInBranch(branchId);
 	}
 	@Transactional
-	@RequestMapping(value = "/checkOut", method = RequestMethod.POST, produces = "application/json")
+	@RequestMapping(value = "/borrower/checkOut", method = RequestMethod.POST)
+	@ResponseBody
 	public void checkOutBook(@RequestBody BookLoans bookLoans){		
 		
 		dateOut = Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC")));
@@ -93,7 +98,8 @@ public class BorrowerService {
 	}
 	
 	@Transactional
-	@RequestMapping(value = "/returnBook", method = RequestMethod.POST, produces = "application/json")
+	@RequestMapping(value = "/borrower/returnBook", method = RequestMethod.POST)
+	@ResponseBody
 	public void returnBook(@RequestBody BookLoans bookLoans){
 		
 		dateIn = Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC")));

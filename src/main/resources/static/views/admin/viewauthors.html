@@ -1,0 +1,71 @@
+<div class="container" ng-controller="authorController">
+	<h1>List of Authors in LMS</h1>
+	<table class="table">
+		<thead class="thead-light">
+			<tr>
+				<th scope="col">#</th>
+				<th scope="col">Author Name</th>
+				<th scope="col">Books Written</th>
+				<th scope="col">Edit</th>
+				<th scope="col">Delete</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="a in authors | orderBy: '-authorName'" >
+				<th scope="row">{{$index+1}}</th>
+				<td scope="row">{{a.authorName}}</td>
+				<span ng-if="a.books.length === 0"><td>No Books</td></span>
+				
+				<td><span ng-repeat="b in a.books" scope="row">{{b.title}}
+						<span ng-if="!$last"> | </span>
+				</span></td>
+				
+				<td><button type="button" class="btn btn-success"
+						data-toggle="modal" data-target="#editAuthorModal"
+						ng-click="popEditModal(a)">Edit</button></td>
+				<td><button type="button" class="btn btn-danger"
+						ng-click="deleteAuthor(a.authorId)">Delete</button></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+
+<div class="modal fade" id="editAuthorModal" tabindex="-1"
+		role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Edit Author</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<label>Name of Author:</label>
+				<div class="modal-body">
+					<input type="text" ng-model="editAuthor.authorName">
+				</div>
+				<label>Pick Books written by Author:</label>
+				<div class="dropdown">
+					<button class="btn btn-secondary dropdown-toggle" type="button"
+						id="dropdownMenuButton" data-toggle="dropdown"
+						aria-haspopup="true" aria-expanded="false">Books</button>
+					<div class="dropdown-menu" aria-labelledby="dropdownMenuButton"
+						multiple>
+						<a class="dropdown-item" ng-repeat="b in books">{{b.title}}</a>
+					</div>
+					<select class="selectpicker" multiple data-live-search="true">
+						<option ng-repeat="b in books">{{b.title}}</option>
+					</select>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary"
+						ng-click="updateAuthor(editAuthor)" data-dismiss="modal">Save
+						changes</button>
+				</div>
+			</div>
+		</div>
+	</div>

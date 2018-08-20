@@ -3,17 +3,20 @@
  */
 package com.gcit.lms.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gcit.lms.Repositories.AuthorRepository;
@@ -34,6 +37,7 @@ import com.gcit.lms.entity.Publisher;
  * @author jeanpaul.nkundiyimana
  *
  */
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 public class AdminService {
 
@@ -57,33 +61,45 @@ public class AdminService {
 	
 	
 	//Author
-	
-	@RequestMapping(value = "/readAuthors", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	@RequestMapping(value = "/admin/authors", method = RequestMethod.GET)
 	public List<Author> readAuthors(){
-		return authorRepo.findAll();	
+		
+		List<Author> authors = new ArrayList<>();
+		authors= authorRepo.findAll();
+		
+		for(Author a: authors) {
+			a.setBooks(bookRepo.findByBookAuthor(a.getAuthorId()));
+		}
+		return authors;
 	}
 	
-	@RequestMapping(value = "/readAuthorsByPK", method = RequestMethod.GET, produces = "application/json")
-	public Optional<Author> readAuthorsByPK(@RequestParam("authorId") Integer authorId){
+	@ResponseBody
+	@RequestMapping(value = "/admin/authors/{authorId}", method = RequestMethod.GET)
+	public Optional<Author> readAuthorsByPK(@PathVariable("authorId") Integer authorId){
 		return authorRepo.findById(authorId);	
 	}
 		
-	@RequestMapping(value = "/readAuthorsByName", method = RequestMethod.GET, produces = "application/json")
-	public List<Author> readAuthorsByName(@RequestParam("authorName") String authorName ){
+	@ResponseBody
+	@RequestMapping(value = "/admin/authors/{authorName}", method = RequestMethod.GET)
+	public List<Author> readAuthorsByName(@PathVariable("authorName") String authorName ){
 		return authorRepo.findByAuthorName(authorName);	
 	}
 	
-	@RequestMapping(value = "/deleteAuthor", method = RequestMethod.DELETE, produces = "application/json")
-	public void delteAuthor(@RequestParam("authorId") Integer authorId){
+	@ResponseBody
+	@RequestMapping(value = "/admin/deleteAuthor/{authorId}", method = RequestMethod.DELETE)
+	public void delteAuthor(@PathVariable("authorId") Integer authorId){
 		  authorRepo.deleteById(authorId);	
 	}
 
-	@RequestMapping(value = "/updateAuthor", method = RequestMethod.PUT, produces = "application/json")
+	@ResponseBody
+	@RequestMapping(value = "/admin/updateAuthor", method = RequestMethod.PUT)
 	public void updateAuthor(@RequestBody Author author){
 		 authorRepo.save(author);
 	}
 	
-	@RequestMapping(value = "/addAuthor", method = RequestMethod.POST )
+	@ResponseBody
+	@RequestMapping(value = "/admin/addAuthor", method = RequestMethod.POST )
 	public Author addAuthor(@RequestBody() Author author){
 		 return authorRepo.save(author);
 	}
@@ -93,27 +109,31 @@ public class AdminService {
 	
 	//Genre
 	
-	@RequestMapping(value = "/readGenres", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/admin/genres", method = RequestMethod.GET)
 	public List<Genre> readGenres(){
 		return genreRepo.findAll();	
 	}
 	
-	@RequestMapping(value = "/readGenresByPK", method = RequestMethod.GET, produces = "application/json")
-	public Optional<Genre> readGenresByPK(@RequestParam("genreId") Integer genreId){
+	@ResponseBody
+	@RequestMapping(value = "/admin/genres/{genreId}", method = RequestMethod.GET)
+	public Optional<Genre> readGenresByPK(@PathVariable("genreId") Integer genreId){
 		return genreRepo.findById(genreId);	
 	}
 	
-	@RequestMapping(value = "/deleteGenre", method = RequestMethod.DELETE, produces = "application/json")
-	public void deleteGenre(@RequestParam("genreId") Integer genreId){
+	@ResponseBody
+	@RequestMapping(value = "/admin/deleteGenre/{genreId}", method = RequestMethod.DELETE)
+	public void deleteGenre(@PathVariable("genreId") Integer genreId){
 		genreRepo.deleteById(genreId);	
 	}
 	
-	@RequestMapping(value = "/updateGenre", method = RequestMethod.PUT, produces = "application/json")
+	@ResponseBody
+	@RequestMapping(value = "/admin/updateGenre", method = RequestMethod.PUT)
 	public void updateGenre(@RequestBody() Genre genre){
 		genreRepo.save(genre);
 	}
 	
-	@RequestMapping(value = "/addGenre", method = RequestMethod.POST )
+	@ResponseBody
+	@RequestMapping(value = "/admin/addGenre", method = RequestMethod.POST )
 	public void addGenre(@RequestBody()Genre genre){
 		genreRepo.save(genre);
 	}
@@ -123,27 +143,32 @@ public class AdminService {
 	
 	//Publisher
 	
-	@RequestMapping(value = "/readPublishers", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	@RequestMapping(value = "/admin/publishers", method = RequestMethod.GET)
 	public List<Publisher> readPublishers(){
 		return publisherRepo.findAll();	
 	}
 	
-	@RequestMapping(value = "/readPublisherByPK", method = RequestMethod.GET, produces = "application/json")
-	public Optional<Publisher> readPublisherByPK(@RequestParam("publisherId") Integer publisherId){
+	@ResponseBody
+	@RequestMapping(value = "/admin/publishers/{publisherId}", method = RequestMethod.GET)
+	public Optional<Publisher> readPublisherByPK(@PathVariable("publisherId") Integer publisherId){
 		return publisherRepo.findById(publisherId);	
 	}
 	
-	@RequestMapping(value = "/deletePublisher", method = RequestMethod.DELETE, produces = "application/json")
-	public void deletePublisher(@RequestParam("publisherId") Integer publisherId){
+	@ResponseBody
+	@RequestMapping(value = "/admin/deletePublisher/{publisherId}", method = RequestMethod.DELETE)
+	public void deletePublisher(@PathVariable("publisherId") Integer publisherId){
 		publisherRepo.deleteById(publisherId);	
 	}
 	
-	@RequestMapping(value = "/updatePublisher", method = RequestMethod.PUT, produces = "application/json")
+	@ResponseBody
+	@RequestMapping(value = "/admin/updatePublisher", method = RequestMethod.PUT)
 	public void updatePublisher(@RequestBody() Publisher publisher){
 		publisherRepo.save(publisher);
 	}
 	
-	@RequestMapping(value = "/addPublisher", method = RequestMethod.POST )
+	@ResponseBody
+	@RequestMapping(value = "/admin/addPublisher", method = RequestMethod.POST )
 	public void addGenre(@RequestBody()Publisher publisher){
 		publisherRepo.save(publisher);
 	}
@@ -154,27 +179,32 @@ public class AdminService {
 	
 	//Borrower
 	
-	@RequestMapping(value = "/borrowers", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	@RequestMapping(value = "/admin/borrowers", method = RequestMethod.GET)
 	public List<Borrower> readBorrowers(){
 		return borrowerRepo.findAll();	
 	}
 	
-	@RequestMapping(value = "/readBorrowersByPK", method = RequestMethod.GET, produces = "application/json")
-	public Optional<Borrower> readBorrowersByPK(@RequestParam("cardNo") Integer cardNo){
+	@ResponseBody
+	@RequestMapping(value = "/admin/borrowers/{cardNo}", method = RequestMethod.GET)
+	public Optional<Borrower> readBorrowersByPK(@PathVariable("cardNo") Integer cardNo){
 		return borrowerRepo.findById(cardNo);	
 	}
 	
-	@RequestMapping(value = "/deleteBorrower", method = RequestMethod.DELETE, produces = "application/json")
-	public void deleteBorrower(@RequestParam("cardNo") Integer cardNo){
+	@ResponseBody
+	@RequestMapping(value = "/admin/deleteBorrower/{cardNo}", method = RequestMethod.DELETE)
+	public void deleteBorrower(@PathVariable("cardNo") Integer cardNo){
 		borrowerRepo.deleteById(cardNo);	
 	}
 	
-	@RequestMapping(value = "/updateBorrower", method = RequestMethod.PUT, produces = "application/json")
+	@ResponseBody
+	@RequestMapping(value = "/updateBorrower", method = RequestMethod.PUT)
 	public void updateBorrower(@RequestBody Borrower borrower){
 		borrowerRepo.save(borrower);	
 	}
 	
-	@RequestMapping(value = "/addBorrower", method = RequestMethod.POST, produces = "application/json")
+	@ResponseBody
+	@RequestMapping(value = "/addBorrower", method = RequestMethod.POST)
 	public void addBorrower(@RequestBody Borrower borrower){
 		borrowerRepo.save(borrower);	
 	}
@@ -182,29 +212,32 @@ public class AdminService {
 	
 	
 	//Branches
-	
-	@RequestMapping(value = "/readAllbranches", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	@RequestMapping(value = "/admin/branches", method = RequestMethod.GET)
 	public List<LibraryBranch> readBranchess(){
 		return branchRepo.findAll();	
 	}
 	
-	@RequestMapping(value = "/readBranchByPK", method = RequestMethod.GET, produces = "application/json")
-	public Optional<LibraryBranch> readBranchesByPK(@RequestParam("branchId") Integer branchId){
+	@ResponseBody
+	@RequestMapping(value = "/admin/branch/{branchId}", method = RequestMethod.GET)
+	public Optional<LibraryBranch> readBranchesByPK(@PathVariable("branchId") Integer branchId){
 		return branchRepo.findById(branchId);	
 	}
 	
-	@RequestMapping(value = "/deleteBranch", method = RequestMethod.DELETE, produces = "application/json")
-	public void deleteBranch(@RequestParam("branchId") Integer branchId){
+	@ResponseBody
+	@RequestMapping(value = "/admin/deleteBranch/{branchId}", method = RequestMethod.DELETE)
+	public void deleteBranch(@PathVariable("branchId") Integer branchId){
 		 branchRepo.deleteById(branchId);	
 	}
 	
-	@RequestMapping(value = "/updateBranch", method = RequestMethod.PUT, produces = "application/json")
+	@ResponseBody
+	@RequestMapping(value = "/admin/updateBranch", method = RequestMethod.PUT)
 	public void updateBranch(@RequestBody LibraryBranch branch){
 		branchRepo.save(branch);	
 	}
 	
-	
-	@RequestMapping(value = "/addBranch", method = RequestMethod.POST, produces = "application/json")
+	@ResponseBody
+	@RequestMapping(value = "/admin/addBranch", method = RequestMethod.POST)
 	public void addBranch(@RequestBody LibraryBranch branch){
 		branchRepo.save(branch);	
 	}
@@ -214,40 +247,51 @@ public class AdminService {
 	
 	//Books
 	
-	@RequestMapping(value = "/books", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	@RequestMapping(value = "/admin/books", method = RequestMethod.GET)
 	public List<Book> readBooks(){
 		return bookRepo.findAll();	
 	}
 	
-	@RequestMapping(value = "/checkedOutbooks", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	@RequestMapping(value = "/admin/checkedOutbooks", method = RequestMethod.GET)
 	public List<Book> readCcheckedOutBooks(){
 		return bookRepo.findCheckedOutBooks();	
 	}
 	
-	@RequestMapping(value = "/readBooks/author/{authorId}", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	@RequestMapping(value = "/admin/booksByAuthor/{authorId}", method = RequestMethod.GET)
 	public List<Book> readBooksByAuthor(@PathVariable Integer authorId){
 		return bookRepo.findByBookAuthor(authorId);	
 	}
 	
-	@RequestMapping(value = "/readBookByPublisher", method = RequestMethod.GET, produces = "application/json")
-	public List<Book> readBookByPublisher(@RequestParam() Integer pubId){
+	@ResponseBody
+	@RequestMapping(value = "/admin/bookByPublisher/{pubId}", method = RequestMethod.GET)
+	public List<Book> readBookByPublisher(@PathVariable("pubId") Integer pubId){
 		return bookRepo.findByBookPublisher(pubId);
 	}
 	
+	@ResponseBody
+	@RequestMapping(value = "/admin/readBooksByBranch/{branchId}", method = RequestMethod.GET)
+	public List<Book> readBookByBranch(@PathVariable Integer branchbId){
+		return bookRepo.findByBookPublisher(branchbId);
+	}
 	
-	@RequestMapping(value = "/addBook", method = RequestMethod.POST, produces = "application/json")
+	
+	@ResponseBody
+	@RequestMapping(value = "/admin/addBook", method = RequestMethod.POST)
 	public void addBook(@RequestBody Book book){
 		bookRepo.save(book);	
 	}
 	
-	
-	@RequestMapping(value = "/deleteBook", method = RequestMethod.DELETE, produces = "application/json")
-	public void deleteBook(@RequestParam("bookId") Integer bookId){
+	@ResponseBody
+	@RequestMapping(value = "/admin/deleteBook/{bookId}", method = RequestMethod.DELETE)
+	public void deleteBook(@PathVariable("bookId") Integer bookId){
 		 bookRepo.deleteById(bookId);	
 	}
 	
 	@Transactional
-	@RequestMapping(value = "/updateBook", method = RequestMethod.PUT, produces = "application/json")
+	@RequestMapping(value = "/admin/updateBook", method = RequestMethod.PUT)
 	public void updateBook(@RequestBody Book book){
 		bookRepo.save(book);	
 	}

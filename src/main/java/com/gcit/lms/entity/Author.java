@@ -48,7 +48,7 @@ public class Author implements Serializable {
 	private String authorName;
 	
 	
-	@ManyToMany(fetch=FetchType.LAZY)
+	@ManyToMany(fetch=FetchType.EAGER)
 	@JoinTable(name = "tbl_book_authors", joinColumns = { @JoinColumn(name = "authorId") }, inverseJoinColumns = { @JoinColumn(name = "bookId") })
 	@JsonBackReference
 	private List<Book> books;
